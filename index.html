@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Sprout in the Hedge Maze</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500;1,6..72,600&display=swap"
+    />
+  </head>
+  <body>
+    <div class="ambient" id="ambient" aria-hidden="true"></div>
+
+    <div class="game" id="game">
+      <header class="hd">
+        <div class="title">
+          <div class="eyebrow">A Sprout minigame</div>
+          <h1>Hedge Maze</h1>
+        </div>
+        <div class="right">
+          <div class="stat"><b id="moveCount">0</b><span>Steps</span></div>
+          <div class="stat"><b id="guardCount">0/0</b><span>Guardians</span></div>
+          <button class="cta" id="btnNew" type="button">New maze</button>
+        </div>
+      </header>
+
+      <!-- Twilight meter — the race against dusk. -->
+      <div class="dusk-row" aria-label="Twilight meter">
+        <span class="dusk-label">Dusk</span>
+        <div class="dusk-meter"><div class="dusk-fill" id="duskFill"></div></div>
+      </div>
+
+      <div class="stage-wrap">
+        <div id="mzStage"></div>
+      </div>
+
+      <footer class="ft">
+        <div class="satchel">
+          <div class="satchel-label">Satchel</div>
+          <div id="invTray"><span class="inv-empty">nothing foraged yet</span></div>
+        </div>
+        <div class="hint">
+          Move with <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> or
+          <kbd>WASD</kbd>. Find what each guardian craves before twilight falls.
+        </div>
+      </footer>
+
+      <div id="beginScreen" class="win-screen show">
+        <div class="win-card begin">
+          <div class="eyebrow">A Sprout minigame</div>
+          <h2>Into the hedge maze</h2>
+          <p>Walk Sprout to the heart of the maze before twilight falls. Find what each guardian craves; trade to pass.</p>
+          <div class="win-actions">
+            <button class="cta" id="btnBegin" type="button">Begin</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="winScreen" class="win-screen">
+        <div class="win-card">
+          <div class="eyebrow" id="winEyebrow">Home before moonset</div>
+          <h2 id="winTitle">Sprout made it through</h2>
+          <p id="winSub">Every guardian fed, every dead-end foraged.</p>
+          <div class="win-stats">
+            <div class="s"><b id="winMoves">0</b><span>Steps</span></div>
+            <div class="s"><b id="winTime">0s</b><span>Time</span></div>
+            <div class="s"><b id="winFed">0</b><span>Fed</span></div>
+          </div>
+          <div class="win-actions">
+            <button class="cta" id="winNew" type="button">Wander a new maze</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

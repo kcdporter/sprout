@@ -1,0 +1,545 @@
+/* Sprout in the Hedge Maze — painterly indigo night-jungle storybook
+   styling. Dark stage with a fog spotlight, a twilight race against the
+   dusk meter, and a luminous flower-spirit who walks the corridors. */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  width: 100%;
+}
+
+:root {
+  --ink: #ece9f7;
+  --ink-soft: #b3adcf;
+  --muted: #9b94c4;
+  --frame-1: #322c66;
+  --frame-2: #241f4c;
+  --frame-3: #181434;
+}
+
+body {
+  font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  color: var(--ink);
+  background:
+    linear-gradient(rgba(13, 11, 28, 0.55), rgba(13, 11, 28, 0.7)),
+    url('/assets/bg-dark.png') center/cover fixed no-repeat,
+    #14112a;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 26px 18px;
+  overflow: hidden;
+}
+
+/* ── drifting fireflies on the page bg ───────────────────────────────────── */
+.ambient { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.amb-fly {
+  position: absolute;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #fff6c8, #ffd86a 60%, rgba(255, 216, 106, 0) 75%);
+  box-shadow: 0 0 8px 2px rgba(255, 216, 106, 0.55);
+  animation: amb-fly ease-in-out infinite;
+}
+@keyframes amb-fly {
+  0%   { transform: translate(0, 0); opacity: 0; }
+  20%  { opacity: 0.9; }
+  50%  { transform: translate(var(--fx, 30px), var(--fy, -40px)); opacity: 0.8; }
+  80%  { opacity: 0.8; }
+  100% { transform: translate(0, 10px); opacity: 0; }
+}
+
+/* ── the game frame ──────────────────────────────────────────────────────── */
+.game {
+  position: relative;
+  z-index: 1;
+  width: min(95vw, 720px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px 22px 20px;
+  border-radius: 28px;
+  isolation: isolate;
+  background: radial-gradient(125% 100% at 50% -8%, var(--frame-1) 0%, var(--frame-2) 46%, var(--frame-3) 100%);
+  box-shadow:
+    0 34px 80px rgba(8, 10, 26, 0.55),
+    0 8px 22px rgba(8, 10, 26, 0.4),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* ── header ──────────────────────────────────────────────────────────────── */
+.hd { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.hd .title .eyebrow {
+  font-size: 11.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+.hd .title h1 {
+  font-family: 'Newsreader', Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(26px, 4.2vw, 38px);
+  margin: 3px 0 0;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.hd .right { display: flex; align-items: center; gap: 10px; }
+
+.stat {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  padding: 8px 14px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-width: 64px;
+}
+.stat b { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+
+.cta {
+  cursor: pointer;
+  appearance: none;
+  font-family: inherit;
+  font-weight: 700;
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 13px;
+  font-size: 14px;
+  padding: 11px 18px;
+  background: linear-gradient(155deg, #2ec77f, #0e9a56);
+  box-shadow: 0 10px 24px rgba(14, 154, 86, 0.34);
+  transition: transform 0.2s cubic-bezier(0.34, 1.5, 0.5, 1), box-shadow 0.2s;
+}
+.cta:hover { transform: translateY(-2px) scale(1.03); }
+.cta:active { transform: scale(0.97); }
+.cta.alt {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: none;
+}
+
+/* ── dusk meter (our twilight race) ──────────────────────────────────────── */
+.dusk-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 2px;
+}
+.dusk-label {
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); font-weight: 700;
+}
+.dusk-meter {
+  flex: 1;
+  height: 6px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.dusk-fill {
+  position: absolute; inset: 0;
+  width: 0%;
+  background: linear-gradient(90deg, #ffd86a 0%, #ff9a6b 30%, #c25e92 65%, #5d3aa6 100%);
+  box-shadow: 0 0 8px rgba(255, 216, 106, 0.35);
+  transition: width 0.35s linear;
+}
+
+/* ── stage ───────────────────────────────────────────────────────────────── */
+.stage-wrap { display: grid; place-items: center; }
+#mzStage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 600px;
+  margin: 0 auto;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    inset 0 14px 40px rgba(6, 8, 22, 0.5);
+}
+
+/* The maze container that render.ts builds. Its bbox is the maze's tile grid
+   (which can exceed the stage). game.ts applies a `transform: translate(...)`
+   each frame as a camera so Sprout's tile stays in view; out-of-frame parts
+   are clipped by #mzStage's overflow:hidden. */
+.maze {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+  /* Paint containment isolates the SVG repaint scope so the rest of the page
+     stays out of the camera-translate critical path. */
+  contain: layout style paint;
+}
+.maze-svg {
+  display: block;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.45));
+  /* Force the SVG onto its own GPU layer so the camera transform just moves
+     the layer — no re-rasterization of the (large) maze content per frame. */
+  transform: translateZ(0);
+}
+.maze-fog {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+/* ── hedge motion ────────────────────────────────────────────────────────── */
+.mz-bush {
+  transform-box: fill-box;
+  transform-origin: 50% 72%;
+  animation: bushsway var(--swd, 5s) ease-in-out infinite alternate;
+}
+@keyframes bushsway {
+  from { transform: rotate(calc(var(--swa, 1.4deg) * -1)) translateX(calc(var(--swx, 0.5px) * -1)); }
+  to   { transform: rotate(var(--swa, 1.4deg)) translateX(var(--swx, 0.5px)); }
+}
+.mz-bloom {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bloomopen var(--bd, 12s) ease-in-out infinite;
+}
+@keyframes bloomopen {
+  0%   { transform: scale(0.12) rotate(-28deg); opacity: 0; }
+  10%  { transform: scale(1.16) rotate(5deg); opacity: 1; }
+  17%  { transform: scale(1) rotate(0); }
+  84%  { transform: scale(1); opacity: 1; }
+  94%  { transform: scale(0.88); opacity: 0.8; }
+  100% { transform: scale(0.12) rotate(-22deg); opacity: 0; }
+}
+
+/* ── items + creatures ───────────────────────────────────────────────────── */
+.mz-item {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bob 3s ease-in-out infinite;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.35));
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+.mz-item.grabbed { animation: grab-pop 0.4s ease-out forwards; }
+@keyframes grab-pop {
+  to { transform: scale(1.6) translateY(-12px); opacity: 0; }
+}
+
+/* ── special tile markers ───────────────────────────────────────────────── */
+.mz-marker { pointer-events: none; }
+.pitfall-swirl, .advance-swirl {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: swirl-rot 5s linear infinite;
+}
+.mark-pitfall { animation: pitfall-pulse 2.4s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+.advance-swirl { animation: swirl-rot 3s linear infinite reverse; }
+@keyframes swirl-rot { to { transform: rotate(360deg); } }
+@keyframes pitfall-pulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(155, 107, 255, 0.45)); }
+  50%      { filter: drop-shadow(0 0 12px rgba(199, 155, 255, 0.7)); }
+}
+.escape-beam {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: escape-pulse 2s ease-in-out infinite;
+}
+@keyframes escape-pulse {
+  0%, 100% { opacity: 0.55; transform: scaleY(0.85); }
+  50%      { opacity: 0.95; transform: scaleY(1.1); }
+}
+.mark-advance { animation: advance-pulse 2.4s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+@keyframes advance-pulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(120, 80, 200, 0.5)); }
+  50%      { filter: drop-shadow(0 0 14px rgba(180, 140, 255, 0.75)); }
+}
+
+/* Pitfall flash overlay — covers the stage briefly when transitioning into or
+   out of a sub-maze. */
+.pitfall-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 28;
+  background: radial-gradient(circle at 50% 50%, #2a1a4a 0%, #0a0420 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease-out;
+}
+.pitfall-flash.on { opacity: 1; }
+
+/* Used pitfalls — entry tile in the parent maze fades out so it visibly
+   reads as "spent". Pointer events stay off either way (markers are decoration). */
+.mz-marker.used {
+  opacity: 0.28;
+  filter: grayscale(0.6);
+  animation: none !important;
+}
+.mz-marker.used .pitfall-swirl { animation: none !important; }
+
+/* Lucky / Unlucky / Ultra-lucky banner shown when entering a sub-maze. Two
+   lines: italic headline + small sub-line saying what just happened. */
+.luck-banner {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  z-index: 29;
+  padding: 8px 18px;
+  border-radius: 16px;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50px) scale(0.9);
+  transition:
+    opacity 0.4s ease,
+    transform 0.45s cubic-bezier(0.34, 1.5, 0.5, 1);
+}
+.luck-banner b {
+  display: block;
+  font: italic 500 18px/1 'Newsreader', Georgia, serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.luck-banner span {
+  display: block;
+  font: 600 10.5px/1 'Space Grotesk', sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+.luck-banner.lucky {
+  color: #fff3c0;
+  background: linear-gradient(135deg, rgba(220, 140, 50, 0.55), rgba(180, 80, 20, 0.4));
+  border: 1px solid rgba(255, 220, 120, 0.55);
+  box-shadow: 0 12px 28px rgba(180, 80, 20, 0.32);
+  text-shadow: 0 0 12px rgba(255, 200, 100, 0.6);
+}
+.luck-banner.unlucky {
+  color: #ffd6e2;
+  background: linear-gradient(135deg, rgba(160, 30, 70, 0.55), rgba(60, 10, 30, 0.5));
+  border: 1px solid rgba(255, 120, 160, 0.5);
+  box-shadow: 0 12px 28px rgba(120, 20, 50, 0.4);
+  text-shadow: 0 0 12px rgba(255, 130, 180, 0.5);
+}
+.luck-banner.ultra {
+  color: #fff;
+  background:
+    linear-gradient(135deg, rgba(255, 215, 100, 0.7), rgba(220, 140, 230, 0.55) 50%, rgba(120, 180, 255, 0.6));
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 16px 40px rgba(200, 130, 220, 0.4),
+    0 0 24px rgba(255, 220, 120, 0.5);
+  text-shadow: 0 0 16px rgba(255, 255, 255, 0.8);
+}
+.luck-banner.show {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+
+/* Celestial state — dusk label flips to a star indicator while active. */
+.dusk-label.celestial {
+  color: #ffe28a;
+  text-shadow: 0 0 8px rgba(255, 220, 120, 0.6);
+  animation: celestial-pulse 2.6s ease-in-out infinite;
+}
+@keyframes celestial-pulse {
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 1; text-shadow: 0 0 14px rgba(255, 230, 140, 0.85); }
+}
+
+/* Required treats (test-mode): a pulsing tinted beacon halo + a sharper drop
+   shadow so the player can find them at a glance. */
+.mz-item.required {
+  filter: drop-shadow(0 0 6px rgba(255, 240, 200, 0.55)) drop-shadow(0 3px 5px rgba(0, 0, 0, 0.35));
+}
+.treat-beacon {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0.25;
+  animation: beacon-pulse 1.8s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+@keyframes beacon-pulse {
+  0%, 100% { transform: scale(0.85); opacity: 0.22; }
+  50%      { transform: scale(1.45); opacity: 0.58; }
+}
+
+.mz-creature {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: float 3.4s ease-in-out infinite;
+  filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.4));
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+.mz-guard.shake .mz-creature { animation: guard-shake 0.42s ease; }
+@keyframes guard-shake {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  20%      { transform: translateX(-3px) rotate(-4deg); }
+  60%      { transform: translateX(3px) rotate(4deg); }
+}
+.mz-guard.fed .mz-creature {
+  transform: scale(0.78);
+  opacity: 0.78;
+  transition: transform 0.5s cubic-bezier(0.3, 1.4, 0.5, 1), opacity 0.5s;
+  animation: none;
+}
+
+.g-wing {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: flutter 1.4s ease-in-out infinite;
+}
+@keyframes flutter {
+  0%, 100% { transform: scaleX(1); }
+  50%      { transform: scaleX(0.7); }
+}
+.g-tongue {
+  transform-box: fill-box;
+  transform-origin: top center;
+  animation: tongue 2.6s ease-in-out infinite;
+}
+@keyframes tongue {
+  0%, 68%, 100% { transform: scaleY(0.25); opacity: 0.35; }
+  78%, 90%      { transform: scaleY(1); opacity: 1; }
+}
+
+/* ── footer / satchel ────────────────────────────────────────────────────── */
+.ft { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.satchel { display: flex; align-items: center; gap: 10px; min-height: 40px; flex: 1; flex-wrap: wrap; }
+.satchel-label {
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); font-weight: 700; white-space: nowrap;
+}
+#invTray { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.inv-empty { font-size: 13px; color: var(--muted); font-style: italic; }
+.inv-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 11px 5px 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  animation: chip-in 0.35s cubic-bezier(0.34, 1.5, 0.5, 1) both;
+}
+.inv-chip svg { width: 26px; height: 26px; display: block; }
+.inv-chip span { font-size: 12.5px; font-weight: 600; }
+.inv-chip.fading { animation: chip-out 0.35s ease-out forwards; }
+@keyframes chip-in { from { opacity: 0; transform: translateY(6px) scale(0.85); } }
+@keyframes chip-out { to { opacity: 0; transform: translateY(-10px) scale(0.85); } }
+
+.hint {
+  font-size: 12px; color: var(--muted); text-align: right;
+  max-width: 240px; line-height: 1.4;
+}
+.hint kbd {
+  font-family: inherit; font-size: 11px;
+  background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 5px; padding: 1px 5px; font-weight: 700; margin: 0 1px;
+}
+
+/* ── speech bubble for trades (over Sprout, so high z) ───────────────────── */
+.mz-bubble {
+  position: fixed;
+  z-index: 10001;
+  pointer-events: none;
+  padding: 9px 13px;
+  border-radius: 13px;
+  text-align: center;
+  background: #fbf9ff;
+  color: #2a2350;
+  box-shadow: 0 10px 26px rgba(8, 8, 30, 0.4);
+  max-width: 220px;
+  transform: translate(-50%, calc(-100% - 14px));
+  animation: bubble-in 0.25s cubic-bezier(0.34, 1.5, 0.5, 1);
+}
+.mz-bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%; top: 100%;
+  transform: translateX(-50%);
+  border: 7px solid transparent;
+  border-top-color: #fbf9ff;
+}
+.mz-bubble b { display: block; font-size: 12.5px; font-weight: 700; }
+.mz-bubble span { display: block; font-size: 11.5px; color: #6a6485; font-style: italic; line-height: 1.25; margin-top: 1px; }
+.mz-bubble.thanks { background: #effaf1; }
+.mz-bubble.thanks::after { border-top-color: #effaf1; }
+@keyframes bubble-in {
+  from { opacity: 0; transform: translate(-50%, calc(-100% - 6px)) scale(0.85); }
+}
+
+/* ── win / lose overlay (sits over the whole game card) ──────────────────── */
+.win-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  border-radius: 28px;
+  background: radial-gradient(120% 100% at 50% 20%, rgba(40, 34, 84, 0.86), rgba(16, 12, 36, 0.94));
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+.win-screen.show { opacity: 1; pointer-events: auto; }
+.win-card {
+  text-align: center;
+  transform: translateY(14px) scale(0.96);
+  transition: transform 0.5s cubic-bezier(0.3, 1.4, 0.5, 1);
+  padding: 0 24px;
+}
+.win-screen.show .win-card { transform: none; }
+.win-card .eyebrow {
+  font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: #ffd98a; font-weight: 700;
+}
+.win-card.lose .eyebrow { color: #caa8ff; }
+.win-card.begin .eyebrow { color: #b3adcf; }
+.win-card h2 {
+  font-family: 'Newsreader', Georgia, serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(30px, 5.5vw, 46px);
+  margin: 6px 0 4px;
+}
+.win-card p { color: var(--ink-soft); margin: 0 0 20px; font-size: 14px; line-height: 1.45; }
+.win-stats { display: flex; gap: 12px; justify-content: center; margin-bottom: 22px; flex-wrap: wrap; }
+.win-stats .s {
+  padding: 12px 18px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.win-stats .s b { display: block; font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.win-stats .s span { font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.win-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* While the modal is open, drop Sprout's z-index so the card covers her.
+   On a win, we move her above the card and bring her back to the front so
+   she blooms in plain view above the eyebrow. */
+body.modal-open .kp-pet { z-index: 4 !important; }
+body.modal-open.won .kp-pet { z-index: 10001 !important; }
+
+/* ── reduced motion ──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .amb-fly, .mz-item, .mz-creature, .g-wing, .g-tongue, .mz-bush, .mz-bloom,
+  .dusk-fill, .inv-chip, .mz-bubble, .treat-beacon,
+  .pitfall-swirl, .advance-swirl, .escape-beam,
+  .mark-pitfall, .mark-advance, .pitfall-flash, .luck-banner {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .hd .title h1 { font-size: 24px; }
+  .stat { min-width: 54px; padding: 7px 10px; }
+  .hint { display: none; }
+}
