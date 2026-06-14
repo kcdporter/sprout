@@ -1,0 +1,17 @@
+# Cloudflare Pages reads this file and applies these headers to responses.
+# Docs: https://developers.cloudflare.com/pages/configuration/headers/
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  # Only kiraporter.ca (and its www subdomain) may embed the game in an
+  # iframe. Other origins get a blocked frame.
+  Content-Security-Policy: frame-ancestors 'self' https://kiraporter.ca https://www.kiraporter.ca
+
+# Vite hashes asset filenames on build, so /assets/* is safe to cache forever.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# index.html points at hashed assets — short cache so deploys propagate quickly.
+/
+  Cache-Control: public, max-age=0, must-revalidate
