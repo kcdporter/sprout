@@ -548,16 +548,21 @@ body.modal-open.won .kp-pet { z-index: 10001 !important; }
 }
 
 /* ── embed mode ──────────────────────────────────────────────────────────── */
-/* When iframed into a host page, drop our own page background + the drifting
-   fireflies so the host's background shows through. The game card and every
-   inner surface (HUD, modals, chips) keep their own opaque styling and stay
-   fully readable. */
-html.embed,
-html.embed body {
-  background: transparent !important;
-}
+/* Triggered by ?embed in the URL. Fills the iframe width with the game card
+   instead of the standalone fixed-width centered column. Background and
+   ambient fireflies stay as on the standalone site — the standalone layout
+   is otherwise untouched. */
 html.embed body {
   padding: 0;
   overflow: visible;
 }
-html.embed .ambient { display: none; }
+html.embed .game {
+  width: 100%;
+  max-width: none;
+  padding: clamp(16px, 3vw, 40px);
+}
+/* Stage is a touch wider in embed so the maze viewport doesn't look stranded
+   inside the wider card. Above this it'd just get awkwardly tall. */
+html.embed #mzStage {
+  max-width: 760px;
+}
