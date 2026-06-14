@@ -548,14 +548,19 @@ body.modal-open.won .kp-pet { z-index: 10001 !important; }
 }
 
 /* ── embed mode ──────────────────────────────────────────────────────────── */
-/* Triggered by ?embed in the URL. Fills the iframe width with the game card
-   instead of the standalone fixed-width centered column. Background and
-   ambient fireflies stay as on the standalone site — the standalone layout
-   is otherwise untouched. */
+/* Triggered by ?embed in the URL. Fills the iframe width and drops the page
+   background + drifting fireflies so the host page shows through. The game
+   card and every inner surface keep their own styling. Standalone (no flag)
+   is untouched. */
+html.embed,
+html.embed body {
+  background: transparent !important;
+}
 html.embed body {
   padding: 0;
   overflow: visible;
 }
+html.embed .ambient { display: none; }
 html.embed .game {
   width: 100%;
   max-width: none;
