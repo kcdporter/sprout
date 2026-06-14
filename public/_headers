@@ -5,8 +5,9 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer
   # Only kiraporter.ca (and its www subdomain) may embed the game in an
-  # iframe. Other origins get a blocked frame.
-  Content-Security-Policy: frame-ancestors 'self' https://kiraporter.ca https://www.kiraporter.ca
+  # iframe in production; localhost / 127.0.0.1 on any port are allowed so
+  # the local dev server (Vite at :5173 etc.) can preview the embed too.
+  Content-Security-Policy: frame-ancestors 'self' https://kiraporter.ca https://www.kiraporter.ca http://localhost:* http://127.0.0.1:*
 
 # Vite hashes asset filenames on build, so /assets/* is safe to cache forever.
 /assets/*
