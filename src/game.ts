@@ -339,6 +339,62 @@ export function startGame(host: HTMLElement): Game {
     tryStep(dc, dr)
   }
 
+  // Touch / swipe input. Each touch can fire repeated steps: every time the
+  // finger crosses `SWIPE_STEP_PX` from the last anchor in the dominant axis,
+  // we fire a step and reset the anchor. That lets you drag a finger across
+  // the stage to walk several tiles in one motion.
+  const SWIPE_STEP_PX = 26
+  const TAP_PX = 6 // movement under this counts as a tap, not a swipe
+  let touchAnchor: { x: number; y: number; id: number } | null = null
+  function onTouchStart(e: TouchEvent) {
+    if (runState !== 'playing') return
+    if (touchAnchor) return
+    const t = e.changedTouches[0]
+    touchAnchor = { x: t.clientX, y: t.clientY, id: t.identifier }
+    e.preventDefault()
+  }
+  function onTouchMove(e: TouchEvent) {
+    if (!touchAnchor) return
+    let t: Touch | null = null
+    for (const c of Array.from(e.changedTouches)) {
+      if (c.identifier === touchAnchor.id) { t = c; break }
+    }
+    if (!t) return
+    e.preventDefault()
+    const dx = t.clientX - touchAnchor.x
+    const dy = t.clientY - touchAnchor.y
+    const absX = Math.abs(dx)
+    const absY = Math.abs(dy)
+    if (Math.max(absX, absY) < SWIPE_STEP_PX) return
+    // Step in the dominant axis; reset anchor in that axis so continued
+    // dragging keeps emitting steps.
+    if (absX >= absY) {
+      tryStep(dx > 0 ? 1 : -1, 0)
+      touchAnchor.x = t.clientX
+    } else {
+      tryStep(0, dy > 0 ? 1 : -1)
+      touchAnchor.y = t.clientY
+    }
+  }
+  function onTouchEnd(e: TouchEvent) {
+    if (!touchAnchor) return
+    let t: Touch | null = null
+    for (const c of Array.from(e.changedTouches)) {
+      if (c.identifier === touchAnchor.id) { t = c; break }
+    }
+    if (!t) return
+    const dx = t.clientX - touchAnchor.x
+    const dy = t.clientY - touchAnchor.y
+    // A short tap with no swipe fires no step (no interpretation as movement).
+    if (Math.abs(dx) < TAP_PX && Math.abs(dy) < TAP_PX) {
+      // nothing — but allow tapping the Begin button etc. underneath
+    }
+    touchAnchor = null
+  }
+  function onTouchCancel() {
+    touchAnchor = null
+  }
+
   function tryStep(dc: number, dr: number) {
     if (performance.now() < stepLockUntil) return
     const nc = frame.sproutCell.c + dc
@@ -764,6 +820,10 @@ export function startGame(host: HTMLElement): Game {
   // ── boot ─────────────────────────────────────────────────────────────────
   initRun()
   window.addEventListener('keydown', onKey)
+  host.addEventListener('touchstart', onTouchStart, { passive: false })
+  host.addEventListener('touchmove', onTouchMove, { passive: false })
+  host.addEventListener('touchend', onTouchEnd, { passive: false })
+  host.addEventListener('touchcancel', onTouchCancel, { passive: false })
   const onResize = () => {
     refreshStageDims()
     lastCx = lastCy = NaN
@@ -784,6 +844,10 @@ export function startGame(host: HTMLElement): Game {
       cancelAnimationFrame(raf)
       window.removeEventListener('keydown', onKey)
       window.removeEventListener('resize', onResize)
+      host.removeEventListener('touchstart', onTouchStart)
+      host.removeEventListener('touchmove', onTouchMove)
+      host.removeEventListener('touchend', onTouchEnd)
+      host.removeEventListener('touchcancel', onTouchCancel)
       cleanupRun()
       flashEl.remove()
       luckBanner.remove()
