@@ -559,10 +559,9 @@ html.embed body {
 html.embed .game {
   width: 100%;
   max-width: none;
-  padding: clamp(16px, 3vw, 40px);
+  padding: 0;
+  border-radius: 0;
 }
-/* Stage is a touch wider in embed so the maze viewport doesn't look stranded
-   inside the wider card. Above this it'd just get awkwardly tall. */
 html.embed #mzStage {
   max-width: 760px;
 }
