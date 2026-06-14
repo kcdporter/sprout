@@ -572,6 +572,11 @@ export function mountSprout(o) {
     S.vx = 0
     S.vy = 0
   }
+  // Change her scale at runtime. The transform string in the loop reads
+  // opts.scale every frame, so mutating it takes effect immediately.
+  function setScale(s) {
+    opts.scale = s
+  }
   function setState(s, dur) {
     S.state = s
     S.stateUntil = dur ? now() + dur : 0
@@ -1440,5 +1445,5 @@ export function mountSprout(o) {
     style.remove()
   }
 
-  return { destroy, setActivity, previewActivity, clearPreview, setHidden, moveTo, snap, emote }
+  return { destroy, setActivity, previewActivity, clearPreview, setHidden, moveTo, snap, setScale, emote }
 }

@@ -22,8 +22,12 @@ import {
 const SPROUT_ANCHOR_X = 75
 const SPROUT_ANCHOR_Y = 150
 const SPROUT_SCALE = 0.4
-const CELLS_W = 12
-const CELLS_H = 12
+// Pre/post game (begin + win + lose screens) — she sits above the card at
+// this scale so she reads as the hero of the moment.
+const SPROUT_HERO_SCALE = 1.6
+// Rectangular maze — more horizontal than vertical to match the wider stage.
+const CELLS_W = 18
+const CELLS_H = 11
 const SUB_CELLS = 5
 const DUSK_MS = Math.max(120_000, CELLS_W * CELLS_H * 1100)
 const MOON_BONUS_MS = 5000
@@ -94,6 +98,7 @@ export function startGame(host: HTMLElement): Game {
   const winFedEl = document.getElementById('winFed') as HTMLElement
   const winCard = winScreen.querySelector<HTMLDivElement>('.win-card')!
   const beginScreen = document.getElementById('beginScreen') as HTMLDivElement
+  const beginCard = beginScreen.querySelector<HTMLDivElement>('.win-card')!
   const btnNew = document.getElementById('btnNew') as HTMLButtonElement
   const btnBegin = document.getElementById('btnBegin') as HTMLButtonElement
   const btnWinNew = document.getElementById('winNew') as HTMLButtonElement
@@ -666,16 +671,19 @@ export function startGame(host: HTMLElement): Game {
     winFedEl.textContent = String(parentFrame.creatures.filter(c => c.satisfied).length)
     winScreen.classList.add('show')
 
-    if (won) {
-      // After the win-card's pop-in transition settles, snap Sprout above its
-      // eyebrow so she blooms in clear space and doesn't cover the stats.
-      setTimeout(() => {
-        const rect = winCard.getBoundingClientRect()
-        const tx = rect.left + rect.width / 2 - SPROUT_ANCHOR_X
-        const ty = rect.top - SPROUT_ANCHOR_Y - 12
-        sprout.snap(tx, ty)
-      }, 560)
-    }
+    // After the card's pop-in transition settles, snap Sprout above its
+    // eyebrow at hero scale so she's the focal point (above the stats on
+    // wins, above the apology on losses).
+    setTimeout(() => snapSproutAboveCard(winCard, SPROUT_HERO_SCALE), 560)
+  }
+
+  /** Position Sprout centered above the given card at the requested scale. */
+  function snapSproutAboveCard(cardEl: HTMLElement, scale: number) {
+    sprout.setScale(scale)
+    const rect = cardEl.getBoundingClientRect()
+    const tx = rect.left + rect.width / 2 - SPROUT_ANCHOR_X
+    const ty = rect.top - SPROUT_ANCHOR_Y - 12
+    sprout.snap(tx, ty)
   }
   function hideWinScreen() {
     winScreen.classList.remove('show')
@@ -712,6 +720,8 @@ export function startGame(host: HTMLElement): Game {
     updateHUD()
     hideWinScreen()
     showBeginScreen()
+    // She's the hero of the title moment — large, above the begin card.
+    setTimeout(() => snapSproutAboveCard(beginCard, SPROUT_HERO_SCALE), 120)
   }
 
   function showBeginScreen() {
@@ -725,6 +735,9 @@ export function startGame(host: HTMLElement): Game {
   function startRun() {
     if (runState !== 'title') return
     hideBeginScreen()
+    // Drop her back to gameplay size; the loop's per-frame moveTo will glide
+    // her from her current (hero) viewport position back to her start tile.
+    sprout.setScale(SPROUT_SCALE)
     runStartedAt = performance.now()
     runState = 'playing'
   }

@@ -1,13 +1,22 @@
 import { startGame } from './game'
 import './style.css'
 
-// Embed mode — a layout variant that fills the iframe width instead of using
-// the standalone centered fixed-width column. Triggered explicitly via the
-// `?embed` (or `?embed=1`) query flag — kept query-only for predictability,
-// so the standalone site at /?embed_anything_else stays unchanged.
-if (new URLSearchParams(location.search).has('embed')) {
-  document.documentElement.classList.add('embed')
+// Theme — dark by default. Honors prefers-color-scheme on first visit, then
+// the user's choice (persisted to localStorage). The `data-theme` attribute
+// on <html> is what the CSS keys off of.
+const THEME_KEY = 'sprout-theme'
+function applyTheme(t: 'dark' | 'light') {
+  document.documentElement.setAttribute('data-theme', t)
 }
+const saved = localStorage.getItem(THEME_KEY) as 'dark' | 'light' | null
+const initial = saved ?? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+applyTheme(initial)
+
+document.getElementById('btnTheme')?.addEventListener('click', () => {
+  const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light'
+  applyTheme(next)
+  localStorage.setItem(THEME_KEY, next)
+})
 
 const stage = document.querySelector<HTMLElement>('#mzStage')!
 startGame(stage)

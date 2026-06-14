@@ -48,7 +48,7 @@ const SPECIAL_TILE_SVG = {
     <ellipse cx="0" cy="${tile * 0.05}" rx="${tile * 0.34}" ry="${tile * 0.1}" fill="rgba(255,216,106,.55)" filter="url(#exitGlow)"/>
     <path d="M ${-tile * 0.26} ${tile * 0.05} L ${-tile * 0.18} ${-tile * 0.6} L ${tile * 0.18} ${-tile * 0.6} L ${tile * 0.26} ${tile * 0.05} Z" fill="rgba(255,232,150,.65)" class="escape-beam"/>
     <circle r="${(tile * 0.08).toFixed(1)}" cx="0" cy="${tile * 0.05}" fill="#fff5b8"/>
-    <text x="0" y="${tile * 0.42}" text-anchor="middle" font-size="${(tile * 0.18).toFixed(1)}" font-weight="700" fill="#ffe07a" letter-spacing="0.1em" font-family="'Space Grotesk', sans-serif">UP</text>`,
+    <text x="0" y="${tile * 0.42}" text-anchor="middle" font-size="${(tile * 0.18).toFixed(1)}" font-weight="700" fill="#ffe07a" letter-spacing="0.1em" font-family="'Space Grotesk', sans-serif">EXIT</text>`,
   advance: (tile: number) => `
     <circle r="${(tile * 0.42).toFixed(1)}" fill="rgba(40,12,80,.65)"/>
     <g class="advance-swirl">
@@ -56,7 +56,7 @@ const SPECIAL_TILE_SVG = {
       <ellipse rx="${(tile * 0.26).toFixed(1)}" ry="${(tile * 0.13).toFixed(1)}" fill="none" stroke="#e7d8ff" stroke-width="${(tile * 0.03).toFixed(1)}" opacity=".7" transform="rotate(45)"/>
     </g>
     <circle r="${(tile * 0.06).toFixed(1)}" fill="#fff" opacity=".55"/>
-    <text x="0" y="${tile * 0.42}" text-anchor="middle" font-size="${(tile * 0.18).toFixed(1)}" font-weight="700" fill="#caa8ff" letter-spacing="0.1em" font-family="'Space Grotesk', sans-serif">DEEPER</text>`,
+    <text x="0" y="${tile * 0.42}" text-anchor="middle" font-size="${(tile * 0.18).toFixed(1)}" font-weight="700" fill="#caa8ff" letter-spacing="0.1em" font-family="'Space Grotesk', sans-serif">EXIT</text>`,
 }
 
 export function buildMazeView(host: HTMLElement, maze: MazeData, items: Item[], creatures: Creature[]): MazeView {

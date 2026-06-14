@@ -43,6 +43,8 @@ export type SproutHandle = {
   /** Hard-teleport to (x, y) in viewport pixels — no easing. Use across frame
    *  swaps so she doesn't visibly drift between mazes. */
   snap: (x: number, y: number) => void
+  /** Change her uniform scale at runtime. Takes effect on the next frame. */
+  setScale: (s: number) => void
   /** Trigger a mood emote (happy / curious / sleepy / idle). */
   emote: (mood: SproutMood) => void
 }

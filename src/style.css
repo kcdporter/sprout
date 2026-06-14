@@ -55,7 +55,7 @@ body {
 .game {
   position: relative;
   z-index: 1;
-  width: min(95vw, 720px);
+  width: min(95vw, 1000px);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -153,8 +153,9 @@ body {
 #mzStage {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
-  max-width: 600px;
+  /* Wider than tall to match the new horizontal maze shape. */
+  aspect-ratio: 16 / 10;
+  max-width: 920px;
   margin: 0 auto;
   border-radius: 18px;
   overflow: hidden;
@@ -524,11 +525,9 @@ body {
 .win-stats .s span { font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
 .win-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
-/* While the modal is open, drop Sprout's z-index so the card covers her.
-   On a win, we move her above the card and bring her back to the front so
-   she blooms in plain view above the eyebrow. */
-body.modal-open .kp-pet { z-index: 4 !important; }
-body.modal-open.won .kp-pet { z-index: 10001 !important; }
+/* Sprout's default z-index (9998) is already above the win-screen overlay
+   (which lives inside .game's stacking context). No modal-open override
+   needed — pre/post game she's snapped above the relevant card by JS. */
 
 /* ── reduced motion ──────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
@@ -547,26 +546,93 @@ body.modal-open.won .kp-pet { z-index: 10001 !important; }
   .hint { display: none; }
 }
 
-/* ── embed mode ──────────────────────────────────────────────────────────── */
-/* Triggered by ?embed in the URL. Fills the iframe width and drops the page
-   background + drifting fireflies so the host page shows through. The game
-   card and every inner surface keep their own styling. Standalone (no flag)
-   is untouched. */
-html.embed,
-html.embed body {
-  background: transparent !important;
+/* ── theme toggle button ─────────────────────────────────────────────────── */
+.iconbtn {
+  width: 42px; height: 42px;
+  display: grid; place-items: center;
+  cursor: pointer; appearance: none;
+  font-family: inherit; color: var(--ink);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 13px;
+  transition: transform 0.2s cubic-bezier(0.34, 1.5, 0.5, 1), background 0.2s;
 }
-html.embed body {
-  padding: 0;
-  overflow: visible;
+.iconbtn:hover { transform: translateY(-2px) scale(1.03); }
+.iconbtn:active { transform: scale(0.97); }
+.iconbtn svg { width: 18px; height: 18px; }
+.iconbtn .ic-moon { display: none; }
+html[data-theme="light"] .iconbtn .ic-sun { display: none; }
+html[data-theme="light"] .iconbtn .ic-moon { display: block; }
+
+/* ── light theme overrides ───────────────────────────────────────────────── */
+/* Purple-flower garden vibe — lavender wash over the bg, soft lavender frame,
+   deep eggplant text. Keeps the same image as dark mode but lets the colour
+   come forward instead of being dimmed under a dark overlay. */
+html[data-theme="light"] {
+  --ink: #2a1c4a;
+  --ink-soft: #4d3a72;
+  --muted: #7064a0;
+  --frame-1: #f7eeff;
+  --frame-2: #e6d8ff;
+  --frame-3: #c8b5ec;
 }
-html.embed .ambient { display: none; }
-html.embed .game {
-  width: 100%;
-  max-width: none;
-  padding: 0;
-  border-radius: 0;
+html[data-theme="light"] body {
+  background:
+    url('/assets/bg-light.png') center/cover fixed no-repeat,
+    #d4c4f0;
 }
-html.embed #mzStage {
-  max-width: 760px;
+html[data-theme="light"] .game {
+  box-shadow:
+    0 30px 70px rgba(60, 35, 110, 0.28),
+    0 8px 22px rgba(60, 35, 110, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+html[data-theme="light"] .stat,
+html[data-theme="light"] .iconbtn {
+  background: rgba(255, 255, 255, 0.55);
+  border-color: rgba(60, 35, 110, 0.18);
+}
+html[data-theme="light"] .stat span,
+html[data-theme="light"] .hd .title .eyebrow,
+html[data-theme="light"] .dusk-label,
+html[data-theme="light"] .satchel-label,
+html[data-theme="light"] .hint {
+  color: var(--muted);
+}
+html[data-theme="light"] .dusk-meter {
+  background: rgba(60, 35, 110, 0.1);
+  border-color: rgba(60, 35, 110, 0.14);
+}
+html[data-theme="light"] .inv-chip {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(60, 35, 110, 0.18);
+  color: var(--ink);
+}
+html[data-theme="light"] .hint kbd {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(60, 35, 110, 0.2);
+  color: var(--ink);
+}
+html[data-theme="light"] #mzStage {
+  box-shadow:
+    inset 0 0 0 1px rgba(60, 35, 110, 0.18),
+    inset 0 14px 40px rgba(20, 12, 50, 0.45);
+}
+html[data-theme="light"] .win-screen {
+  background: radial-gradient(120% 100% at 50% 20%, rgba(250, 244, 255, 0.92), rgba(210, 188, 240, 0.95));
+}
+html[data-theme="light"] .win-card h2 { color: var(--ink); }
+html[data-theme="light"] .win-card p { color: var(--ink-soft); }
+html[data-theme="light"] .win-card .eyebrow { color: #8a4cc8; }
+html[data-theme="light"] .win-card.lose .eyebrow { color: #5a3d9e; }
+html[data-theme="light"] .win-card.begin .eyebrow { color: var(--muted); }
+html[data-theme="light"] .win-stats .s {
+  background: rgba(255, 255, 255, 0.55);
+  border-color: rgba(60, 35, 110, 0.18);
+}
+html[data-theme="light"] .win-stats .s span { color: var(--muted); }
+html[data-theme="light"] .cta.alt {
+  background: rgba(60, 35, 110, 0.1);
+  border-color: rgba(60, 35, 110, 0.2);
+  color: var(--ink);
 }
