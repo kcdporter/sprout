@@ -546,3 +546,18 @@ body.modal-open.won .kp-pet { z-index: 10001 !important; }
   .stat { min-width: 54px; padding: 7px 10px; }
   .hint { display: none; }
 }
+
+/* ── embed mode ──────────────────────────────────────────────────────────── */
+/* When iframed into a host page, drop our own page background + the drifting
+   fireflies so the host's background shows through. The game card and every
+   inner surface (HUD, modals, chips) keep their own opaque styling and stay
+   fully readable. */
+html.embed,
+html.embed body {
+  background: transparent !important;
+}
+html.embed body {
+  padding: 0;
+  overflow: visible;
+}
+html.embed .ambient { display: none; }
